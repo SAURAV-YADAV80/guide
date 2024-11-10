@@ -5,15 +5,17 @@ interface NavItemProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void; // Added onClick prop for closing the menu when a link is clicked
 }
 
 const Navbar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const NavItem: React.FC<NavItemProps> = ({ href, children, className = "" }) => (
-    // For development preview:
+  // NavItem component with onClick handler to close the mobile menu when clicked
+  const NavItem: React.FC<NavItemProps> = ({ href, children, className = "", onClick }) => (
     <Link
       to={href}
+      onClick={onClick} // Close the menu when a link is clicked
       className={`px-4 py-2 rounded-lg transition-all duration-150 ${className}`}
     >
       {children}
@@ -81,18 +83,21 @@ const Navbar: React.FC = () => {
           <NavItem 
             href="/profile" 
             className="block w-full text-gray-600 hover:bg-gray-50"
+            onClick={() => setMenuOpen(false)} // Close the menu on click
           >
             Profile
           </NavItem>
           <NavItem 
             href="/login" 
             className="block w-full text-white bg-indigo-600 hover:bg-indigo-700"
+            onClick={() => setMenuOpen(false)} // Close the menu on click
           >
             Login
           </NavItem>
           <NavItem 
             href="/signup" 
             className="block w-full text-indigo-600 hover:bg-indigo-50"
+            onClick={() => setMenuOpen(false)} // Close the menu on click
           >
             Sign Up
           </NavItem>

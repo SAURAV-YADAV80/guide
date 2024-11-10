@@ -6,26 +6,39 @@ interface NavItemProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  onClick?: () => void;  // Proper type for onClick
 }
 
-const Sidebar: React.FC = () => {
-  const [expandedItems, setExpandedItems] = useState({
+interface SidebarProps {
+  setSidebarOpen: (isOpen: boolean) => void;  // Proper type for setSidebarOpen
+}
+
+const Sidebar = ({ setSidebarOpen }: SidebarProps) => {
+  // Type the state to restrict keys to 'todo' and 'diary'
+  const [expandedItems, setExpandedItems] = useState<{
+    todo: boolean;
+    diary: boolean;
+  }>({
     todo: false,
     diary: false
   });
 
-  const toggleItem = (item: string) => {
+  // Update toggleItem function to use the keys of expandedItems
+  const toggleItem = (item: keyof typeof expandedItems) => {
     setExpandedItems(prev => ({
       ...prev,
       [item]: !prev[item]
     }));
   };
 
-  // Update NavItem to accept proper types
-  const NavItem = ({ href, children, className = "" }: NavItemProps) => (
+  const NavItem = ({ href, children, className = "", onClick }: NavItemProps) => (
     <Link
       to={href}
       className={`flex items-center px-4 py-2.5 text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-lg transition-all duration-150 ${className}`}
+      onClick={() => {
+        onClick?.(); // Call the onClick function if provided
+        setSidebarOpen(false); // Close the sidebar after a link is clicked
+      }}
     >
       {children}
     </Link>
@@ -36,7 +49,10 @@ const Sidebar: React.FC = () => {
       <aside className="h-full flex flex-col py-4 overflow-y-auto">
         {/* Brand/Logo area */}
         <div className="px-6 mb-6">
-          <NavItem href="/" className="text-xl font-semibold text-indigo-600 hover:text-indigo-700">
+          <NavItem
+            href="/"
+            className="text-xl font-semibold text-indigo-600 hover:text-indigo-700"
+          >
             Dashboard
           </NavItem>
         </div>
